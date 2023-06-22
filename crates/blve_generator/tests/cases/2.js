@@ -13,7 +13,7 @@ export default function(elm) {
       color.v = 'blue'
     }
 
-    elm.innerHTML = `<span id="test" style="${`color : ${ color.v } `}">I am a color</span><button id="test">黄色</button><button id="test">赤色</button><button id="test">青色</button>`;
+    elm.innerHTML = `<div><span id="test" style="${`color : ${ color.v } `}">I am a color</span><button id="test">黄色</button><button id="test">赤色</button><button id="test">青色</button></div>`;
 
     const [testRef,testRef,testRef,testRef] = getElmRefs(["test","test","test","test"], 15);
 

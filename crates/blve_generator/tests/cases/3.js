@@ -10,7 +10,7 @@ export default function(elm) {
       balue.v += "xxx"
     }
 
-    elm.innerHTML = `<input id="test" value="${balue.v}"/><div id="test">${escapeHtml(balue.v)}</div><button id="test">xxx</button>`;
+    elm.innerHTML = `<div><input id="test" value="${balue.v}" /><div id="test">${escapeHtml(balue.v)}</div><button id="test">xxx</button></div>`;
 
     const [testRef,testRef,testRef] = getElmRefs(["test","test","test"], 7);
 

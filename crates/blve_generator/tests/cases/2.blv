@@ -1,8 +1,10 @@
 html:
-  <span :style="`color:${color}`">I am a color</span>
-  <button @click="yellow">黄色</button>
-  <button @click="red">赤色</button>
-  <button @click="blve">青色</button>
+  <div>
+    <span :style="`color:${color}`">I am a color</span>
+    <button @click="yellow">黄色</button>
+    <button @click="red">赤色</button>
+    <button @click="blve">青色</button>
+  </div>
 script:
   let color = 'red'
   function yellow(){

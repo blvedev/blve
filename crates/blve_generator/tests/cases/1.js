@@ -17,7 +17,7 @@ export default function(elm) {
     }
     let interval = reactiveValue(setInterval(increment, 2000), 2, refs)
 
-    elm.innerHTML = `<h1 id="abc">Hello Blve!</h1><div id="test">${escapeHtml(count.v)}</div><button id="test">+1</button><button id="test">${escapeHtml(interval.v == null ? "start" : "clear")}</button>`;
+    elm.innerHTML = `<div><h1 id="abc">Hello Blve!</h1><div id="test">${escapeHtml(count.v)}</div><button id="test">+1</button><button id="test">${escapeHtml(interval.v == null ? "start" : "clear")}</button></div>`;
 
     const [testRef,testRef,testRef] = getElmRefs(["test","test","test"], 7);
 

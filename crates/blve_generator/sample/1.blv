@@ -1,6 +1,8 @@
 html:
-  <h1>Hello Blve!</h1>
-  <button @click="increment">${count}</button>
+  <div>
+    <h1>Hello Blve!</h1>
+    <button @click="increment">${count}</button>
+  </div>
 script:
   let count = 0
   function increment(){

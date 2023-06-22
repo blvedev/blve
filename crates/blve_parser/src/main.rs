@@ -22,8 +22,7 @@ fn main() {
             match c {
                 Ok(d) => {
                     match &d.detailed_language_blocks.js {
-                        Some(_js) => {
-                        }
+                        Some(_js) => {}
                         None => {
                             // Err("No js block")
                         }

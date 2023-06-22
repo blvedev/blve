@@ -1,4 +1,5 @@
 mod generate_js;
+mod orig_html_struct;
 mod structs;
 mod transformers;
 use std::fs;
