@@ -1,18 +1,22 @@
 use blve_html_parser::{Dom as RawDom, Element as RawElm, Node as RawNode};
-use nanoid::nanoid;
 use std::collections::HashMap;
 
+use crate::transformers::utils::UUID_GENERATOR;
+
+#[derive(Debug, Clone)]
 pub struct Node {
     pub uuid: String,
     pub content: NodeContent,
 }
 
+#[derive(Debug, Clone)]
 pub enum NodeContent {
     Element(Element),
     TextNode(String),
     Comment(String),
 }
 
+#[derive(Debug, Clone)]
 pub struct Element {
     pub tag_name: String,
     pub attributes: HashMap<String, Option<String>>,
@@ -27,19 +31,77 @@ impl Element {
             tag_name: raw_elm.name,
         }
     }
+
+    pub fn remove_child(&mut self, child_uuid: &String) -> (Node, u64, u64, Option<u64>) {
+        let idx = self
+            .children
+            .iter()
+            .position(|child| child.uuid == *child_uuid)
+            .unwrap();
+        let mut cur = idx.clone() + 1;
+        let (distance, idx_of_ref) = loop {
+            if cur >= self.children.len() {
+                break (cur as u64 - idx as u64, None);
+            }
+            let cur_child = &self.children[cur];
+            match &cur_child.content {
+                NodeContent::Element(elm) => {
+                    if !elm.attributes.contains_key("$$$conditional$$$") {
+                        break (cur as u64 - idx as u64, Some(cur as u64));
+                    }
+                }
+                _ => {}
+            }
+            cur += 1;
+        };
+        let elm_node = self.children[idx].clone();
+        self.children.retain(|child| child.uuid != *child_uuid);
+        (elm_node, idx as u64, distance, idx_of_ref)
+    }
+
+    pub fn generate_element_on_js(&self, if_block_name: &String) -> (String, Vec<String>) {
+        let elm_name = format!("{}Elm", if_block_name);
+        let mut js_code = vec![format!(
+            "let {} = document.createElement(\"{}\");\n",
+            elm_name, self.tag_name
+        )];
+        for (key, value) in &self.attributes {
+            if key == "$$$conditional$$$" {
+                continue;
+            }
+            match value {
+                Some(value) => {
+                    js_code.push(format!("{}[\"{}\"] = \"{}\";\n", elm_name, key, value))
+                }
+                None => js_code.push(format!("{}.setAttribute(\"{}\", \"\");\n", elm_name, key)),
+            }
+        }
+        let mut child_str = "".to_string();
+        if self.children.len() != 0 {
+            for child in &self.children {
+                child_str.push_str(child.to_string().as_str());
+            }
+            js_code.push(format!(
+                "{}Elm.innerHTML = \"{}\";\n",
+                if_block_name, child_str
+            ));
+        }
+
+        (elm_name, js_code)
+    }
 }
 
 impl Node {
     fn new_comment(comment: &String) -> Node {
         Node {
-            uuid: nanoid!(),
+            uuid: UUID_GENERATOR.lock().unwrap().gen(),
             content: NodeContent::Comment(comment.clone()),
         }
     }
 
     fn new_text(text: &String) -> Node {
         Node {
-            uuid: nanoid!(),
+            uuid: UUID_GENERATOR.lock().unwrap().gen(),
             content: NodeContent::TextNode(text.clone()),
         }
     }
@@ -50,7 +112,7 @@ impl Node {
             children.push(Node::new_from_node(child));
         }
         Node {
-            uuid: nanoid!(),
+            uuid: UUID_GENERATOR.lock().unwrap().gen(),
             content: NodeContent::Element(Element::new_from_raw(elm.clone(), children)),
         }
     }

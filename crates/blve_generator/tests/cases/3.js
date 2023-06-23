@@ -1,5 +1,5 @@
 
-import { reactiveValue,getElmRefs,addEvListener,genUpdateFunc,escapeHtml,replaceText,replaceAttr } from 'blve/dist/runtime'
+import { reactiveValue,getElmRefs,addEvListener,genUpdateFunc,escapeHtml,replaceText,replaceAttr,insertEmpty } from 'blve/dist/runtime'
 export default function(elm) {
     const refs = [0, false, null];
     const balue = reactiveValue("", 1, refs)
@@ -10,18 +10,18 @@ export default function(elm) {
       balue.v += "xxx"
     }
 
-    elm.innerHTML = `<div><input id="test" value="${balue.v}" /><div id="test">${escapeHtml(balue.v)}</div><button id="test">xxx</button></div>`;
+    elm.innerHTML = `<div><input id="mSZVkKzedMphuVkGNIHeF" value="${balue.v}" /><div id="tzPQlyiTuzVvo_BLFwCqV">${escapeHtml(balue.v)}</div><button id="syHUaALEsaXMHcAsLMvyE">xxx</button></div>`;
 
-    const [testRef,testRef,testRef] = getElmRefs(["test","test","test"], 7);
+    const [mSZVkKzedMphuVkGNIHeFRef,tzPQlyiTuzVvo_BLFwCqVRef,syHUaALEsaXMHcAsLMvyERef] = getElmRefs(["mSZVkKzedMphuVkGNIHeF","tzPQlyiTuzVvo_BLFwCqV","syHUaALEsaXMHcAsLMvyE"], 7);
 
-    addEvListener(testRef, "input", onInput);
+    addEvListener(mSZVkKzedMphuVkGNIHeFRef, "input", onInput);
 
-    addEvListener(testRef, "click", xxx);
+    addEvListener(syHUaALEsaXMHcAsLMvyERef, "click", xxx);
 
     refs[2] = genUpdateFunc(() => {
-        refs[0]  & 1 && replaceAttr("value", balue.v, testRef);
+        refs[0]  & 1 && replaceAttr("value", balue.v, mSZVkKzedMphuVkGNIHeFRef);
     
-        refs[0] & 1 && replaceText(`${escapeHtml(balue.v)}`, testRef);
+        refs[0] & 1 && replaceText(`${escapeHtml(balue.v)}`, tzPQlyiTuzVvo_BLFwCqVRef);
     
     });
 

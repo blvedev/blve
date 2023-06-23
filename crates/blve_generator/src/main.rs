@@ -2,10 +2,11 @@ mod generate_js;
 mod orig_html_struct;
 mod structs;
 mod transformers;
-use std::fs;
-
 use crate::generate_js::generate_js_from_blocks;
 use blve_parser::parse_blve_file;
+use std::fs;
+#[macro_use]
+extern crate lazy_static;
 
 fn main() -> Result<(), String> {
     // get the file path from the command line

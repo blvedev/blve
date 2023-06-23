@@ -1,4 +1,6 @@
-use std::env;
+use std::{env, sync::Mutex};
+
+use rand::{rngs::StdRng, SeedableRng};
 
 use crate::structs::transform_info::AddStringToPosition;
 
@@ -19,15 +21,46 @@ pub fn add_strings_to_script(
     return result;
 }
 
-pub fn gen_nanoid() -> String {
-    if is_testgen() {
-        "test".to_string()
-    } else {
-        let alphabet: [char; 26] = [
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'v', 'u', 'w', 'x', 'y', 'z',
-        ];
-        nanoid::nanoid!(10, &alphabet)
+use rand::seq::SliceRandom;
+
+lazy_static! {
+    pub static ref UUID_GENERATOR: Mutex<UuidGenerator> = Mutex::new(UuidGenerator::new());
+}
+
+pub struct UuidGenerator {
+    seed: u8,
+}
+
+impl UuidGenerator {
+    fn new() -> UuidGenerator {
+        UuidGenerator { seed: 0 }
+    }
+
+    pub fn gen(&mut self) -> String {
+        if is_testgen() {
+            let seed = [self.seed; 32]; // ここに適当なシード値を設定します。
+            let mut rng: StdRng = SeedableRng::from_seed(seed);
+
+            let alphabet: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$";
+            let size = 21;
+
+            let id: String = (0..size)
+                .map(|_| {
+                    let random_char = alphabet.choose(&mut rng).unwrap();
+                    *random_char as char
+                })
+                .collect();
+            self.seed = self.seed + 1;
+            id
+        } else {
+            let alphabet: [char; 54] = [
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+                'q', 'r', 's', 't', 'v', 'u', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'V', 'U',
+                'W', 'X', 'Y', 'Z', '_', '$',
+            ];
+            nanoid::nanoid!(10, &alphabet)
+        }
     }
 }
 

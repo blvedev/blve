@@ -18,6 +18,7 @@ fn main() -> Result<(), String> {
             "3".to_string(),
             "4".to_string(),
             "5".to_string(),
+            "6".to_string(),
         ]
     };
     for file_name in file_names {

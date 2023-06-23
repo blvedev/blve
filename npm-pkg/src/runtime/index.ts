@@ -81,3 +81,9 @@ export function getElmRefs(ids: string[], preserveId: number) {
 		return e;
 	});
 }
+
+export function insertEmpty(parent: HTMLElement, anchor: HTMLElement|null) {
+	const empty = document.createTextNode(" ");
+	parent.insertBefore(empty, anchor);
+	return empty;
+}
